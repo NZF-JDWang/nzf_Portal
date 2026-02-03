@@ -13,12 +13,12 @@ export default function OperationsPage() {
         <SectionHeader title="Operations" subtitle="Upcoming ops first. Past ops are archived below." />
         <div className="flex flex-wrap items-center gap-3 text-xs uppercase tracking-wide text-muted">
           <span>Filters (UI only):</span>
-          <button className="rounded-full border border-white/10 px-3 py-1 hover:border-white/30">All</button>
-          <button className="rounded-full border border-white/10 px-3 py-1 hover:border-white/30">Reforger</button>
-          <button className="rounded-full border border-white/10 px-3 py-1 hover:border-white/30">Arma 3</button>
-          <button className="rounded-full border border-white/10 px-3 py-1 hover:border-white/30">Open</button>
-          <button className="rounded-full border border-white/10 px-3 py-1 hover:border-white/30">Limited</button>
-          <button className="rounded-full border border-white/10 px-3 py-1 hover:border-white/30">Full</button>
+          <button className="rounded border border-white/10 px-3 py-1 hover:border-white/30">All</button>
+          <button className="rounded border border-white/10 px-3 py-1 hover:border-white/30">Reforger</button>
+          <button className="rounded border border-white/10 px-3 py-1 hover:border-white/30">Arma 3</button>
+          <button className="rounded border border-white/10 px-3 py-1 hover:border-white/30">Open</button>
+          <button className="rounded border border-white/10 px-3 py-1 hover:border-white/30">Limited</button>
+          <button className="rounded border border-white/10 px-3 py-1 hover:border-white/30">Full</button>
         </div>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">

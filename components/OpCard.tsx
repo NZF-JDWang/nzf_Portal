@@ -13,7 +13,7 @@ export function OpCard({ operation, highlight }: OpCardProps) {
   return (
     <Link
       href={`/operations/${operation.id}`}
-      className={`group flex h-full flex-col justify-between rounded-2xl border border-white/10 bg-base-800 p-6 shadow-card transition hover:-translate-y-1 hover:border-white/20 ${
+      className={`group flex h-full flex-col justify-between rounded-lg border border-white/10 bg-base-800 p-6 transition hover:-translate-y-1 hover:border-white/20 ${
         highlight ? "ring-1 ring-accent-500/40" : ""
       }`}
     >
@@ -23,7 +23,7 @@ export function OpCard({ operation, highlight }: OpCardProps) {
           <Badge label={operation.game} />
         </div>
         <div className="text-sm text-muted">{formatNzDateTime(operation.startsAt)}</div>
-        <div className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${statusColor(operation.status)}`}>
+        <div className={`inline-flex rounded px-3 py-1 text-xs font-semibold ${statusColor(operation.status)}`}>
           {operation.status}
         </div>
         <p className="text-sm text-white/70">{operation.teaser}</p>

@@ -16,6 +16,7 @@ Open `http://localhost:3000` (or the port shown in the terminal).
 - Built with Next.js (App Router), TypeScript, and Tailwind CSS.
 - Data is mocked in `data/operations.ts` for rapid UI iteration.
 - Discord auth is provisioned but not implemented yet.
+- Calendar is the primary UX (Sunday-first, NZT, 24-hour time).
 
 ## Config
 

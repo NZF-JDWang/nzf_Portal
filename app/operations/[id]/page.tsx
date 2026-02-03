@@ -25,7 +25,7 @@ export default async function OperationPage({ params }: OperationPageProps) {
   return (
     <section className="py-12">
       <Container className="space-y-10">
-        <div className="rounded-2xl border border-white/10 bg-base-800 p-8 shadow-card">
+        <div className="rounded-lg border border-white/10 bg-base-800 p-8">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="space-y-2">
               <div className="text-xs uppercase tracking-wide text-muted">Operation</div>
@@ -33,7 +33,7 @@ export default async function OperationPage({ params }: OperationPageProps) {
             </div>
             <div className="flex flex-wrap items-center gap-3">
               <Badge label={operation.game} />
-              <span className={`rounded-full px-3 py-1 text-xs font-semibold ${statusColor(operation.status)}`}>
+              <span className={`rounded px-3 py-1 text-xs font-semibold ${statusColor(operation.status)}`}>
                 {operation.status}
               </span>
             </div>
@@ -98,7 +98,7 @@ export default async function OperationPage({ params }: OperationPageProps) {
             <SectionHeader title="Intel" subtitle="Reference images and maps for the AO." />
             <div className="grid gap-4">
               {operation.intel.map((asset) => (
-                <div key={asset.src} className="overflow-hidden rounded-2xl border border-white/10 bg-base-800">
+                <div key={asset.src} className="overflow-hidden rounded-lg border border-white/10 bg-base-800">
                   <Image src={asset.src} alt={asset.label ?? "Intel"} width={600} height={360} />
                   {asset.label ? <div className="px-4 py-3 text-xs text-muted">{asset.label}</div> : null}
                 </div>
@@ -111,17 +111,17 @@ export default async function OperationPage({ params }: OperationPageProps) {
           <SectionHeader title="Comments" subtitle="Public read-only. Members can post after sign-in." />
           <div className="space-y-4">
             {operation.comments.length === 0 ? (
-              <div className="rounded-2xl border border-dashed border-white/15 bg-base-800 p-6 text-sm text-muted">
+              <div className="rounded-lg border border-dashed border-white/15 bg-base-800 p-6 text-sm text-muted">
                 No comments yet.
               </div>
             ) : (
               operation.comments.map((comment) => (
-                <div key={comment.id} className="rounded-2xl border border-white/10 bg-base-800 p-5">
+                <div key={comment.id} className="rounded-lg border border-white/10 bg-base-800 p-5">
                   <div className="flex items-center justify-between text-xs text-muted">
                     <div className="flex items-center gap-2">
                       <span className="font-semibold text-white">{comment.author}</span>
                       {comment.role ? (
-                        <span className="rounded-full border border-white/10 px-2 py-0.5 text-[10px] uppercase tracking-wide">
+                        <span className="rounded border border-white/10 px-2 py-0.5 text-[10px] uppercase tracking-wide">
                           {comment.role}
                         </span>
                       ) : null}
@@ -133,7 +133,7 @@ export default async function OperationPage({ params }: OperationPageProps) {
               ))
             )}
           </div>
-          <div className="rounded-2xl border border-white/10 bg-base-800 p-6">
+          <div className="rounded-lg border border-white/10 bg-base-800 p-6">
             <div className="text-sm font-semibold">{canWrite ? "Write a comment" : "Sign in to comment"}</div>
             <p className="mt-2 text-sm text-muted">
               {canWrite
@@ -142,7 +142,7 @@ export default async function OperationPage({ params }: OperationPageProps) {
             </p>
             <button
               disabled={!canWrite}
-              className={`mt-4 rounded-full px-5 py-2 text-xs font-semibold uppercase tracking-wide ${
+              className={`mt-4 rounded px-5 py-2 text-xs font-semibold uppercase tracking-wide ${
                 canWrite ? "bg-accent-500 text-base-900" : "border border-white/15 text-white/40"
               }`}
             >

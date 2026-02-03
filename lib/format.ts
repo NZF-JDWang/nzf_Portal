@@ -20,6 +20,7 @@ const nzDateFormatter = new Intl.DateTimeFormat("en-NZ", {
 
 const nzTimeFormatter = new Intl.DateTimeFormat("en-NZ", {
   timeZone: "Pacific/Auckland",
+  hour12: false,
   hour: "2-digit",
   minute: "2-digit"
 });
@@ -34,6 +35,20 @@ export function formatNzDate(iso: string): string {
 
 export function formatNzTime(iso: string): string {
   return `${nzTimeFormatter.format(new Date(iso))} NZT`;
+}
+
+const nzHeaderTimeFormatter = new Intl.DateTimeFormat("en-NZ", {
+  timeZone: "Pacific/Auckland",
+  hour12: false,
+  hour: "2-digit",
+  minute: "2-digit",
+  weekday: "short",
+  day: "2-digit",
+  month: "short"
+});
+
+export function formatNzHeaderTime(iso: string): string {
+  return `${nzHeaderTimeFormatter.format(new Date(iso))} NZT`;
 }
 
 export function statusColor(status: OpStatus): string {

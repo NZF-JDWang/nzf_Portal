@@ -9,6 +9,7 @@ export const operations: Operation[] = [
     status: "Open",
     missionMaker: "Lt. Harper",
     teaser: "Secure the northern ridgeline and establish a forward NZF FOB.",
+    signups: ["Hawke", "Rangi", "Tama", "Moana", "Kiri", "Wiremu", "Matiu"],
     briefing: {
       situation:
         "A hostile militia has fortified the northern ridgeline and is staging raids on local infrastructure.",
@@ -48,11 +49,12 @@ export const operations: Operation[] = [
   {
     id: "southern-cross",
     name: "Operation Southern Cross",
-    startsAt: "2026-02-14T20:00:00+13:00",
+    startsAt: "2026-02-13T20:00:00+13:00",
     game: "Reforger",
     status: "Limited",
     missionMaker: "Capt. Ellis",
     teaser: "Rapid deployment to protect allied convoy through contested terrain.",
+    signups: ["Rangi", "Kiri", "Matiu", "Aroha"],
     briefing: {
       situation:
         "Allied convoy is set to traverse hostile territory under high risk of ambush.",
@@ -87,6 +89,7 @@ export const operations: Operation[] = [
     status: "Open",
     missionMaker: "WO Fisher",
     teaser: "Urban security sweep and intel recovery at the harbour.",
+    signups: ["Hawke", "Tama", "Moana"],
     briefing: {
       situation:
         "Insurgent cells are operating out of the harbour district and targeting infrastructure.",
@@ -109,11 +112,12 @@ export const operations: Operation[] = [
   {
     id: "night-river",
     name: "Operation Night River",
-    startsAt: "2026-01-24T19:30:00+13:00",
+    startsAt: "2026-01-28T19:30:00+13:00",
     game: "Reforger",
     status: "Closed",
     missionMaker: "Lt. Harper",
     teaser: "Completed raid to disrupt enemy resupply route.",
+    signups: ["Aroha", "Wiremu", "Matiu", "Kiri"],
     briefing: {
       situation:
         "Enemy resupply route ran along the night river corridor. Mission complete.",

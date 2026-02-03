@@ -33,6 +33,7 @@ export type Operation = {
   status: OpStatus;
   missionMaker: string;
   teaser: string;
+  signups: string[];
   briefing: BriefingSections;
   intel: IntelAsset[];
   comments: Comment[];

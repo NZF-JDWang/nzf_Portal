@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { config } from "@/lib/config";
+import { formatNzHeaderTime } from "@/lib/format";
 import { Container } from "@/components/Container";
 
 export function Nav() {
@@ -16,20 +17,23 @@ export function Nav() {
           </div>
         </Link>
         <nav className="hidden items-center gap-6 text-sm md:flex">
+          <span className="text-xs uppercase tracking-wide text-muted">
+            {formatNzHeaderTime(new Date().toISOString())}
+          </span>
           <Link href="/operations">Operations</Link>
           <Link href="#highlights">Highlights</Link>
           <Link href="#about">About</Link>
           <a
             href={config.discordInviteUrl}
-            className="rounded-full border border-white/15 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-white/80 hover:text-white"
+            className="rounded border border-white/15 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-white/80 hover:text-white"
           >
             Join Discord
           </a>
-          <button className="rounded-full bg-accent-500 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-base-900">
+          <button className="rounded bg-accent-500 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-base-900">
             Sign In
           </button>
         </nav>
-        <button className="md:hidden rounded-full border border-white/20 px-3 py-2 text-xs font-semibold uppercase tracking-wide">
+        <button className="md:hidden rounded border border-white/20 px-3 py-2 text-xs font-semibold uppercase tracking-wide">
           Menu
         </button>
       </Container>
