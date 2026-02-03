@@ -1,9 +1,10 @@
 import { Container } from "@/components/Container";
 import { OpCard } from "@/components/OpCard";
 import { SectionHeader } from "@/components/SectionHeader";
-import { operations } from "@/data/operations";
+import { getOperations } from "@/data/operations";
 
-export default function OperationsPage() {
+export default async function OperationsPage() {
+  const operations = await getOperations();
   const upcoming = operations.filter((operation) => new Date(operation.startsAt).getTime() >= Date.now());
   const past = operations.filter((operation) => new Date(operation.startsAt).getTime() < Date.now());
 

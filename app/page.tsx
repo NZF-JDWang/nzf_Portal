@@ -4,9 +4,10 @@ import { Container } from "@/components/Container";
 import { CalendarSection } from "@/components/CalendarSection";
 import { SectionHeader } from "@/components/SectionHeader";
 import { config } from "@/lib/config";
-import { operations, upcomingOperations } from "@/data/operations";
+import { getOperations, getUpcomingOperations } from "@/data/operations";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const [operations, upcomingOperations] = await Promise.all([getOperations(), getUpcomingOperations()]);
   const nextOp = upcomingOperations[0];
 
   return (

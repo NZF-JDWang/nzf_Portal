@@ -14,7 +14,7 @@ type OperationPageProps = {
 };
 
 export default async function OperationPage({ params }: OperationPageProps) {
-  const operation = getOperationById(params.id);
+  const operation = await getOperationById(params.id);
   if (!operation) {
     notFound();
   }

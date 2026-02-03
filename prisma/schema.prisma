@@ -1,0 +1,60 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Operation {
+  id           String      @id
+  name         String
+  startsAt     DateTime
+  game         String
+  status       String
+  missionMaker String
+  teaser       String
+  briefing     Briefing?
+  intel        IntelAsset[]
+  comments     Comment[]
+  signups      Signup[]
+}
+
+model Briefing {
+  id              String    @id @default(cuid())
+  operationId     String    @unique
+  situation       String
+  enemyForces     String
+  friendlyForces  String
+  objectives      String
+  execution       String
+  commandSignal   String
+  rulesOfEngagement String
+  operation       Operation @relation(fields: [operationId], references: [id], onDelete: Cascade)
+}
+
+model IntelAsset {
+  id          String    @id @default(cuid())
+  operationId String
+  src         String
+  label       String?
+  operation   Operation @relation(fields: [operationId], references: [id], onDelete: Cascade)
+}
+
+model Comment {
+  id          String    @id @default(cuid())
+  operationId String
+  author      String
+  role        String?
+  timestamp   DateTime
+  body        String
+  operation   Operation @relation(fields: [operationId], references: [id], onDelete: Cascade)
+}
+
+model Signup {
+  id          String    @id @default(cuid())
+  operationId String
+  name        String
+  operation   Operation @relation(fields: [operationId], references: [id], onDelete: Cascade)
+}
