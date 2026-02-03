@@ -6,8 +6,6 @@ import { Badge } from "@/components/Badge";
 import { SectionHeader } from "@/components/SectionHeader";
 import { getOperationById } from "@/data/operations";
 import { formatNzDate, formatNzDateTime, formatNzTime, statusColor } from "@/lib/format";
-import { getSession } from "@/lib/auth/mock";
-import { canComment } from "@/lib/roles";
 
 type OperationPageProps = {
   params: { id: string };
@@ -18,9 +16,6 @@ export default async function OperationPage({ params }: OperationPageProps) {
   if (!operation) {
     notFound();
   }
-
-  const session = await getSession();
-  const canWrite = session ? canComment(session.roles) : false;
 
   return (
     <section className="py-12">
@@ -134,19 +129,15 @@ export default async function OperationPage({ params }: OperationPageProps) {
             )}
           </div>
           <div className="rounded-lg border border-white/10 bg-base-800 p-6">
-            <div className="text-sm font-semibold">{canWrite ? "Write a comment" : "Sign in to comment"}</div>
+            <div className="text-sm font-semibold">Comments are read-only for now</div>
             <p className="mt-2 text-sm text-muted">
-              {canWrite
-                ? "Once Discord auth is wired, members can leave briefing updates here."
-                : "Discord login will unlock comments for NZF members."}
+              Comment posting will open once event and mission workflows are finalized.
             </p>
             <button
-              disabled={!canWrite}
-              className={`mt-4 rounded px-5 py-2 text-xs font-semibold uppercase tracking-wide ${
-                canWrite ? "bg-accent-500 text-base-900" : "border border-white/15 text-white/40"
-              }`}
+              disabled
+              className="mt-4 rounded border border-white/15 px-5 py-2 text-xs font-semibold uppercase tracking-wide text-white/40"
             >
-              {canWrite ? "Post Comment" : "Sign In Required"}
+              Posting Disabled
             </button>
           </div>
         </div>

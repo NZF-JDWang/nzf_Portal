@@ -1,15 +1,18 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useSession } from "next-auth/react";
 
 import { Container } from "@/components/Container";
 import { SectionHeader } from "@/components/SectionHeader";
 import { operations } from "@/data/operations";
 import { getNzDateKey } from "@/lib/calendar";
+import { canCreateMission } from "@/lib/roles";
 
 const games = ["Reforger", "Arma 3"] as const;
 
 export default function NewMissionPage() {
+  const { data: session } = useSession();
   const [name, setName] = useState("");
   const [date, setDate] = useState("");
   const [timeHour, setTimeHour] = useState("20");
@@ -39,6 +42,21 @@ export default function NewMissionPage() {
   const intelPreviews = useMemo(() => {
     return intelImages.map((file) => ({ file, url: URL.createObjectURL(file) }));
   }, [intelImages]);
+
+  const isAuthorized = useMemo(() => canCreateMission(session ?? null), [session]);
+
+  if (!isAuthorized) {
+    return (
+      <section className="py-12">
+        <Container className="space-y-6">
+          <SectionHeader title="Add Mission" subtitle="Mission Makers can publish new operations." />
+          <div className="rounded-lg border border-white/10 bg-base-800 p-6 text-sm text-muted">
+            You need the Mission Maker role (or superuser access) to add missions.
+          </div>
+        </Container>
+      </section>
+    );
+  }
 
   useEffect(() => {
     return () => {

@@ -3,9 +3,14 @@ import Link from "next/link";
 
 import { config } from "@/lib/config";
 import { formatNzHeaderTime } from "@/lib/format";
+import { getServerAuthSession } from "@/lib/auth/session";
+import { canAccessAdmin } from "@/lib/roles";
 import { Container } from "@/components/Container";
 
-export function Nav() {
+export async function Nav() {
+  const session = await getServerAuthSession();
+  const showAdminLink = canAccessAdmin(session);
+
   return (
     <header className="border-b border-white/10 bg-base-850/80 backdrop-blur">
       <Container className="flex items-center justify-between py-4">
@@ -23,15 +28,28 @@ export function Nav() {
           <Link href="/operations">Operations</Link>
           <Link href="#highlights">Highlights</Link>
           <Link href="#about">About</Link>
+          {showAdminLink ? <Link href="/admin">Admin</Link> : null}
           <a
             href={config.discordInviteUrl}
             className="rounded border border-white/15 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-white/80 hover:text-white"
           >
             Join Discord
           </a>
-          <button className="rounded bg-accent-500 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-base-900">
-            Sign In
-          </button>
+          {session?.user ? (
+            <Link
+              href="/api/auth/signout"
+              className="rounded border border-white/15 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-white/80 hover:text-white"
+            >
+              Sign Out
+            </Link>
+          ) : (
+            <Link
+              href="/api/auth/signin/discord"
+              className="rounded bg-accent-500 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-base-900"
+            >
+              Sign In
+            </Link>
+          )}
         </nav>
         <button className="md:hidden rounded border border-white/20 px-3 py-2 text-xs font-semibold uppercase tracking-wide">
           Menu

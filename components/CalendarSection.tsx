@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useSession } from "next-auth/react";
 
 import type { Operation } from "@/types/operation";
 import { CalendarMonth } from "@/components/CalendarMonth";
@@ -10,6 +11,7 @@ import Image from "next/image";
 import { Badge } from "@/components/Badge";
 import { formatNzDateTime } from "@/lib/format";
 import { getMonthAnchorDateFromIso, getStartOfWeek } from "@/lib/calendar";
+import { canCreateEvent, canCreateMission } from "@/lib/roles";
 
 type CalendarSectionProps = {
   operations: Operation[];
@@ -17,6 +19,7 @@ type CalendarSectionProps = {
 };
 
 export function CalendarSection({ operations, initialSelectedId }: CalendarSectionProps) {
+  const { data: session } = useSession();
   const initialSelection = useMemo(() => {
     if (initialSelectedId) {
       return operations.find((operation) => operation.id === initialSelectedId) ?? null;
@@ -32,6 +35,9 @@ export function CalendarSection({ operations, initialSelectedId }: CalendarSecti
   const signupList = selected?.signups ?? [];
   const signupCount = signupList.length;
 
+  const allowMissionCreate = canCreateMission(session ?? null);
+  const allowEventCreate = canCreateEvent(session ?? null);
+
   return (
     <div className="grid gap-10 xl:grid-cols-[1.05fr_1.35fr] xl:items-start">
       <div className="w-full space-y-4">
@@ -41,6 +47,8 @@ export function CalendarSection({ operations, initialSelectedId }: CalendarSecti
               operations={operations}
               monthDate={monthDate}
               selectedOperationId={selected?.id}
+              canCreateMission={allowMissionCreate}
+              canCreateEvent={allowEventCreate}
               onSelect={(operation) => {
                 setSelected(operation);
                 setMonthDate(getMonthAnchorDateFromIso(operation.startsAt));

@@ -19,6 +19,8 @@ type CalendarMonthProps = {
   selectedOperationId?: string | null;
   onSelect?: (operation: Operation) => void;
   onMonthChange?: (date: Date) => void;
+  canCreateMission?: boolean;
+  canCreateEvent?: boolean;
 };
 
 const weekdayLabels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -35,7 +37,9 @@ export function CalendarMonth({
   monthDate,
   selectedOperationId,
   onSelect,
-  onMonthChange
+  onMonthChange,
+  canCreateMission = false,
+  canCreateEvent = false
 }: CalendarMonthProps) {
   const anchorDate = monthDate ?? getMonthAnchorDateFromIso(monthIso);
   const { year, month } = getNzDateParts(anchorDate);
@@ -80,12 +84,22 @@ export function CalendarMonth({
           </button>
         </div>
         <div className="flex items-center gap-2">
-          <Link
-            href="/missions/new"
-            className="rounded border border-white/10 px-3 py-1 text-xs uppercase tracking-wide text-white/70 hover:border-white/30"
-          >
-            Add Mission
-          </Link>
+          {canCreateEvent ? (
+            <Link
+              href="/events/new"
+              className="rounded border border-white/10 px-3 py-1 text-xs uppercase tracking-wide text-white/70 hover:border-white/30"
+            >
+              Add Event
+            </Link>
+          ) : null}
+          {canCreateMission ? (
+            <Link
+              href="/missions/new"
+              className="rounded border border-white/10 px-3 py-1 text-xs uppercase tracking-wide text-white/70 hover:border-white/30"
+            >
+              Add Mission
+            </Link>
+          ) : null}
           <Badge label="NZT" />
         </div>
       </div>
