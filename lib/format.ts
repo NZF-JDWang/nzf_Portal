@@ -2,6 +2,7 @@ import type { OpStatus } from "@/types/operation";
 
 const nzFormatter = new Intl.DateTimeFormat("en-NZ", {
   timeZone: "Pacific/Auckland",
+  hour12: false,
   weekday: "short",
   day: "2-digit",
   month: "short",

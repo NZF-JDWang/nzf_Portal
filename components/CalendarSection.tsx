@@ -4,10 +4,12 @@ import { useMemo, useState } from "react";
 
 import type { Operation } from "@/types/operation";
 import { CalendarMonth } from "@/components/CalendarMonth";
+import { CalendarWeek } from "@/components/CalendarWeek";
 import Image from "next/image";
 
 import { Badge } from "@/components/Badge";
 import { formatNzDateTime } from "@/lib/format";
+import { getMonthAnchorDateFromIso, getStartOfWeek } from "@/lib/calendar";
 
 type CalendarSectionProps = {
   operations: Operation[];
@@ -23,19 +25,41 @@ export function CalendarSection({ operations, initialSelectedId }: CalendarSecti
   }, [initialSelectedId, operations]);
 
   const [selected, setSelected] = useState<Operation | null>(initialSelection);
+  const [monthDate, setMonthDate] = useState<Date>(() =>
+    getMonthAnchorDateFromIso(initialSelection?.startsAt)
+  );
 
   const signupList = selected?.signups ?? [];
   const signupCount = signupList.length;
 
   return (
     <div className="grid gap-10 xl:grid-cols-[1.05fr_1.35fr] xl:items-start">
-      <div className="aspect-square w-full">
-        <CalendarMonth
-          operations={operations}
-          monthIso={selected?.startsAt}
-          selectedOperationId={selected?.id}
-          onSelect={setSelected}
-        />
+      <div className="w-full space-y-4">
+        <div className="hidden md:block">
+          <div className="aspect-square w-full">
+            <CalendarMonth
+              operations={operations}
+              monthDate={monthDate}
+              selectedOperationId={selected?.id}
+              onSelect={(operation) => {
+                setSelected(operation);
+                setMonthDate(getMonthAnchorDateFromIso(operation.startsAt));
+              }}
+              onMonthChange={(date) => setMonthDate(date)}
+            />
+          </div>
+        </div>
+        <div className="md:hidden">
+          <CalendarWeek
+            startDate={getStartOfWeek(selected?.startsAt ? new Date(selected.startsAt) : new Date())}
+            operations={operations}
+            selectedOperationId={selected?.id}
+            onSelect={(operation) => {
+              setSelected(operation);
+              setMonthDate(getMonthAnchorDateFromIso(operation.startsAt));
+            }}
+          />
+        </div>
       </div>
       <div className="space-y-6">
         <div className="rounded-lg border border-white/10 bg-base-800 p-6">

@@ -8,16 +8,16 @@ import { Container } from "@/components/Container";
 export function Nav() {
   return (
     <header className="border-b border-white/10 bg-base-850/80 backdrop-blur">
-      <Container className="flex items-center justify-between py-5">
+      <Container className="flex items-center justify-between py-4">
         <Link href="/" className="flex items-center gap-3">
-          <Image src="/brand/nzf_logo.png" alt="NZF logo" width={36} height={36} />
+          <Image src="/brand/nzf_logo.png" alt="NZF logo" width={60} height={60} />
           <div className="leading-tight">
-            <div className="text-sm font-semibold text-white">New Zealand Forces</div>
-            <div className="text-xs text-muted">Ops Portal</div>
+            <div className="text-2xl font-semibold text-white md:text-3xl">New Zealand Forces</div>
+            <div className="text-base text-muted md:text-lg">Ops Portal</div>
           </div>
         </Link>
-        <nav className="hidden items-center gap-6 text-sm md:flex">
-          <span className="text-xs uppercase tracking-wide text-muted">
+        <nav className="hidden items-center gap-5 text-sm md:flex">
+          <span className="rounded border border-white/15 bg-base-800/80 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white/80">
             {formatNzHeaderTime(new Date().toISOString())}
           </span>
           <Link href="/operations">Operations</Link>

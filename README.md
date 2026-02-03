@@ -17,6 +17,7 @@ Open `http://localhost:3000` (or the port shown in the terminal).
 - Data is mocked in `data/operations.ts` for rapid UI iteration.
 - Discord auth is provisioned but not implemented yet.
 - Calendar is the primary UX (Sunday-first, NZT, 24-hour time).
+- Mission creation UI lives at `/missions/new` (AI rewrite and uploads are stubs).
 
 ## Config
 

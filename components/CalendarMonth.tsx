@@ -1,19 +1,24 @@
+import Link from "next/link";
 import type { Operation } from "@/types/operation";
 import { Badge } from "@/components/Badge";
 import { formatNzTime } from "@/lib/format";
 import {
+  addMonths,
   getDaysInMonth,
   getMonthAnchorDateFromIso,
   getNzDateParts,
   getNzMonthLabel,
-  getNzWeekdayIndex
+  getNzWeekdayIndex,
+  isSameNzDay
 } from "@/lib/calendar";
 
 type CalendarMonthProps = {
   operations: Operation[];
   monthIso?: string;
+  monthDate?: Date;
   selectedOperationId?: string | null;
   onSelect?: (operation: Operation) => void;
+  onMonthChange?: (date: Date) => void;
 };
 
 const weekdayLabels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -24,8 +29,15 @@ const statusDot = {
   Closed: "bg-status-closed"
 } as const;
 
-export function CalendarMonth({ operations, monthIso, selectedOperationId, onSelect }: CalendarMonthProps) {
-  const anchorDate = getMonthAnchorDateFromIso(monthIso);
+export function CalendarMonth({
+  operations,
+  monthIso,
+  monthDate,
+  selectedOperationId,
+  onSelect,
+  onMonthChange
+}: CalendarMonthProps) {
+  const anchorDate = monthDate ?? getMonthAnchorDateFromIso(monthIso);
   const { year, month } = getNzDateParts(anchorDate);
   const daysInMonth = getDaysInMonth(year, month);
   const firstDayDate = new Date(Date.UTC(year, month - 1, 1, 12));
@@ -38,6 +50,7 @@ export function CalendarMonth({ operations, monthIso, selectedOperationId, onSel
     }
     return acc;
   }, {});
+  const today = new Date();
 
   const totalCells = 42;
   const cells = Array.from({ length: totalCells }, (_, index) => {
@@ -49,8 +62,32 @@ export function CalendarMonth({ operations, monthIso, selectedOperationId, onSel
   return (
     <div className="flex h-full flex-col rounded-lg border border-white/10 bg-base-800 p-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="text-base font-semibold">{getNzMonthLabel(anchorDate)}</div>
-        <Badge label="NZT" />
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => onMonthChange?.(addMonths(anchorDate, -1))}
+            className="rounded border border-white/10 px-2 py-1 text-xs text-white/60 hover:border-white/30"
+          >
+            ◀
+          </button>
+          <div className="text-base font-semibold">{getNzMonthLabel(anchorDate)}</div>
+          <button
+            type="button"
+            onClick={() => onMonthChange?.(addMonths(anchorDate, 1))}
+            className="rounded border border-white/10 px-2 py-1 text-xs text-white/60 hover:border-white/30"
+          >
+            ▶
+          </button>
+        </div>
+        <div className="flex items-center gap-2">
+          <Link
+            href="/missions/new"
+            className="rounded border border-white/10 px-3 py-1 text-xs uppercase tracking-wide text-white/70 hover:border-white/30"
+          >
+            Add Mission
+          </Link>
+          <Badge label="NZT" />
+        </div>
       </div>
       <div className="mt-3 grid grid-cols-7 gap-2 text-[10px] text-muted">
         {weekdayLabels.map((label) => (
@@ -63,7 +100,11 @@ export function CalendarMonth({ operations, monthIso, selectedOperationId, onSel
         {cells.map((day, index) => (
           <div
             key={`${day ?? "empty"}-${index}`}
-            className="relative aspect-square rounded-md border border-white/5 bg-base-900/60 p-2 text-[10px]"
+            className={`relative aspect-square rounded-md border p-2 text-[10px] ${
+              day && isSameNzDay(today, new Date(Date.UTC(year, month - 1, day, 12)))
+                ? "border-accent-500/60 bg-base-800"
+                : "border-white/5 bg-base-900/60"
+            }`}
           >
             {day ? (
               <div className="flex h-full flex-col justify-between">

@@ -54,3 +54,27 @@ export function getMonthAnchorDateFromIso(iso?: string) {
   const { year, month } = getNzDateParts(now);
   return new Date(Date.UTC(year, month - 1, 1, 12));
 }
+
+export function addMonths(date: Date, delta: number) {
+  return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth() + delta, 1, 12));
+}
+
+export function addDays(date: Date, delta: number) {
+  return new Date(date.getTime() + delta * 24 * 60 * 60 * 1000);
+}
+
+export function getStartOfWeek(date: Date) {
+  const weekday = getNzWeekdayIndex(date);
+  return addDays(date, -weekday);
+}
+
+export function isSameNzDay(a: string | Date, b: string | Date) {
+  const aParts = getNzDateParts(a);
+  const bParts = getNzDateParts(b);
+  return aParts.year === bParts.year && aParts.month === bParts.month && aParts.day === bParts.day;
+}
+
+export function getNzDateKey(value: string | Date) {
+  const parts = getNzDateParts(value);
+  return `${parts.year}-${String(parts.month).padStart(2, "0")}-${String(parts.day).padStart(2, "0")}`;
+}
