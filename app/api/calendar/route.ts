@@ -82,7 +82,8 @@ function buildEvent(payload: Record<string, unknown>): CalendarEvent {
 }
 
 export async function GET() {
-  return NextResponse.json({ items: getCalendarItems() });
+  const items = await getCalendarItems();
+  return NextResponse.json({ items });
 }
 
 export async function POST(request: Request) {

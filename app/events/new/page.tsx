@@ -1,13 +1,13 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSession } from "next-auth/react";
 
 import { Container } from "@/components/Container";
 import { SectionHeader } from "@/components/SectionHeader";
-import { getCalendarItems } from "@/data/calendar";
 import { getNzDateKey } from "@/lib/calendar";
 import { canCreateEvent } from "@/lib/roles";
+import type { CalendarItem } from "@/types/calendar";
 import { getCalendarItemStartsAt, getCalendarItemTitle } from "@/types/calendar";
 
 export default function NewEventPage() {
@@ -17,6 +17,7 @@ export default function NewEventPage() {
   const [timeHour, setTimeHour] = useState("19");
   const [timeMinute, setTimeMinute] = useState("00");
   const [description, setDescription] = useState("");
+  const [calendarItems, setCalendarItems] = useState<CalendarItem[]>([]);
 
   const isAuthorized = useMemo(() => canCreateEvent(session ?? null), [session]);
   const selectedDateKey = useMemo(() => {
@@ -24,12 +25,28 @@ export default function NewEventPage() {
     return getNzDateKey(new Date(`${date}T12:00:00`));
   }, [date]);
 
+  useEffect(() => {
+    let isMounted = true;
+    fetch("/api/calendar")
+      .then((response) => response.json())
+      .then((data: { items?: CalendarItem[] }) => {
+        if (isMounted && Array.isArray(data.items)) {
+          setCalendarItems(data.items);
+        }
+      })
+      .catch(() => null);
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   const conflictingItem = useMemo(() => {
     if (!selectedDateKey) return null;
     return (
-      getCalendarItems().find((item) => getNzDateKey(getCalendarItemStartsAt(item)) === selectedDateKey) ?? null
+      calendarItems.find((item) => getNzDateKey(getCalendarItemStartsAt(item)) === selectedDateKey) ?? null
     );
-  }, [selectedDateKey]);
+  }, [calendarItems, selectedDateKey]);
 
   if (!isAuthorized) {
     return (

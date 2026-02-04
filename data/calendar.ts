@@ -1,12 +1,6 @@
-import { operations } from "@/data/operations";
+import { getOperations } from "@/data/operations";
 import type { CalendarEvent, CalendarItem, CalendarMission } from "@/types/calendar";
 import { getCalendarItemStartsAt } from "@/types/calendar";
-
-const missionItems: CalendarMission[] = operations.map((operation) => ({
-  id: operation.id,
-  type: "mission",
-  operation
-}));
 
 export const events: CalendarEvent[] = [
   {
@@ -25,14 +19,25 @@ export const events: CalendarEvent[] = [
   }
 ];
 
-const calendarItems: CalendarItem[] = [...missionItems, ...events];
+const runtimeItems: CalendarItem[] = [];
 
-export function getCalendarItems() {
-  return [...calendarItems].sort((a, b) => {
+function sortCalendarItems(items: CalendarItem[]) {
+  return [...items].sort((a, b) => {
     return new Date(getCalendarItemStartsAt(a)).getTime() - new Date(getCalendarItemStartsAt(b)).getTime();
   });
 }
 
+export async function getCalendarItems() {
+  const operations = await getOperations();
+  const missionItems: CalendarMission[] = operations.map((operation) => ({
+    id: operation.id,
+    type: "mission",
+    operation
+  }));
+
+  return sortCalendarItems([...missionItems, ...events, ...runtimeItems]);
+}
+
 export function addCalendarItem(item: CalendarItem) {
-  calendarItems.push(item);
+  runtimeItems.push(item);
 }

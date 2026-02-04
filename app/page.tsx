@@ -7,8 +7,8 @@ import { config } from "@/lib/config";
 import { getCalendarItems } from "@/data/calendar";
 import { getCalendarItemStartsAt } from "@/types/calendar";
 
-export default function HomePage() {
-  const items = getCalendarItems();
+export default async function HomePage() {
+  const items = await getCalendarItems();
   const nextOp = items.find((item) => new Date(getCalendarItemStartsAt(item)).getTime() >= Date.now());
 
   return (
@@ -95,7 +95,7 @@ export default function HomePage() {
             <SectionHeader title="About NZF" subtitle="Organised milsim with a clear, professional cadence." />
             <p className="text-muted">
               New Zealand Forces is a milsim unit focused on structured operations, clear comms, and teamwork. We run
-              weekly ops with a calm, mission-first approach — no gimmicks, no noise, just clean execution.
+              weekly ops with a calm, mission-first approach - no gimmicks, no noise, just clean execution.
             </p>
           </div>
           <div className="rounded-lg border border-white/10 bg-base-800 p-8">
