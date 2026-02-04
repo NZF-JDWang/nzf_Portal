@@ -129,6 +129,10 @@ export function CalendarMonth({
                   {(opsByDay[day] ?? []).slice(0, 1).map((item) => {
                     const isSelected = selectedOperationId === item.id;
                     const startsAt = getCalendarItemStartsAt(item);
+                    const itemStyle =
+                      item.type === "event"
+                        ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-100 hover:border-emerald-400/60"
+                        : "border-sky-500/30 bg-sky-500/10 text-sky-100 hover:border-sky-400/60";
                     return (
                       <button
                         type="button"
@@ -137,7 +141,7 @@ export function CalendarMonth({
                         className={`flex w-full items-center justify-between rounded border px-2 py-1 text-[10px] transition ${
                           isSelected
                             ? "border-accent-500 bg-accent-500/10 text-white"
-                            : "border-white/10 bg-base-800 text-white/70 hover:border-white/30"
+                            : itemStyle
                         }`}
                       >
                         <span>{formatNzTime(startsAt)}</span>

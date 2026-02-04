@@ -44,6 +44,10 @@ export function CalendarWeek({ startDate, items, selectedOperationId, onSelect }
                 {dayOps.slice(0, 2).map((item) => {
                   const isSelected = selectedOperationId === item.id;
                   const startsAt = getCalendarItemStartsAt(item);
+                  const itemStyle =
+                    item.type === "event"
+                      ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-100 hover:border-emerald-400/60"
+                      : "border-sky-500/30 bg-sky-500/10 text-sky-100 hover:border-sky-400/60";
                   return (
                     <button
                       key={item.id}
@@ -52,7 +56,7 @@ export function CalendarWeek({ startDate, items, selectedOperationId, onSelect }
                       className={`w-full rounded border px-2 py-1 text-left ${
                         isSelected
                           ? "border-accent-500 bg-accent-500/10 text-white"
-                          : "border-white/10 bg-base-800 text-white/70"
+                          : itemStyle
                       }`}
                     >
                       <div className="flex items-center justify-between gap-2">

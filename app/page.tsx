@@ -23,12 +23,6 @@ export default async function HomePage() {
                 <h1 className="text-2xl font-semibold">Operations Calendar</h1>
               </div>
             </div>
-            <a
-              href={config.discordInviteUrl}
-              className="rounded border border-white/15 px-5 py-3 text-xs font-semibold uppercase tracking-wide text-white/80 hover:text-white"
-            >
-              Join Discord
-            </a>
           </div>
           <CalendarSection items={items} initialSelectedId={nextOp?.id} />
         </Container>

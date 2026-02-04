@@ -9,7 +9,6 @@ import { CalendarMonth } from "@/components/CalendarMonth";
 import { CalendarWeek } from "@/components/CalendarWeek";
 import Image from "next/image";
 
-import { Badge } from "@/components/Badge";
 import { formatNzDateTime } from "@/lib/format";
 import { getMonthAnchorDateFromIso, getStartOfWeek } from "@/lib/calendar";
 import { canCreateEvent, canCreateMission } from "@/lib/roles";
@@ -100,7 +99,15 @@ export function CalendarSection({ items, initialSelectedId }: CalendarSectionPro
                     <div className="text-sm font-semibold text-white">{getCalendarItemTitle(item)}</div>
                     <div className="text-xs text-muted">{formatNzDateTime(getCalendarItemStartsAt(item))}</div>
                   </div>
-                  <Badge label={item.type === "mission" ? "Mission" : "Event"} />
+                  <span
+                    className={`inline-flex items-center rounded border px-3 py-1 text-xs font-semibold uppercase tracking-wide ${
+                      item.type === "mission"
+                        ? "border-sky-500/40 bg-sky-500/10 text-sky-100"
+                        : "border-emerald-500/40 bg-emerald-500/10 text-emerald-100"
+                    }`}
+                  >
+                    {item.type === "mission" ? "Mission" : "Event"}
+                  </span>
                 </li>
               ))}
             </ul>
@@ -114,7 +121,15 @@ export function CalendarSection({ items, initialSelectedId }: CalendarSectionPro
               {selected?.type === "event" ? "Selected Event" : "Selected Mission"}
             </div>
             {selected ? (
-              <Badge label={selected.type === "event" ? "Event" : selected.operation.game} />
+              <span
+                className={`inline-flex items-center rounded border px-3 py-1 text-xs font-semibold uppercase tracking-wide ${
+                  selected.type === "mission"
+                    ? "border-sky-500/40 bg-sky-500/10 text-sky-100"
+                    : "border-emerald-500/40 bg-emerald-500/10 text-emerald-100"
+                }`}
+              >
+                {selected.type === "mission" ? "Mission" : "Event"}
+              </span>
             ) : null}
           </div>
           <div className="mt-3 text-2xl font-semibold">

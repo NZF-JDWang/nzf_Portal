@@ -26,8 +26,7 @@ export async function Nav() {
             {formatNzHeaderTime(new Date().toISOString())}
           </span>
           <Link href="/operations">Operations</Link>
-          <Link href="#highlights">Highlights</Link>
-          <Link href="#about">About</Link>
+          <Link href="/#highlights">Highlights</Link>
           {showAdminLink ? <Link href="/admin">Admin</Link> : null}
           <a
             href={config.discordInviteUrl}
