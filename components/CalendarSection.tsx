@@ -25,6 +25,21 @@ export function CalendarSection({ items, initialSelectedId }: CalendarSectionPro
     return items[0] ?? null;
   }, [initialSelectedId, items]);
 
+  const upcomingEvents = useMemo(() => {
+    const now = new Date();
+    const rangeEnd = new Date(now);
+    rangeEnd.setDate(rangeEnd.getDate() + 30);
+
+    return [...items]
+      .filter((item) => {
+        const startsAt = new Date(getCalendarItemStartsAt(item));
+        return startsAt >= now && startsAt <= rangeEnd;
+      })
+      .sort(
+        (a, b) => new Date(getCalendarItemStartsAt(a)).getTime() - new Date(getCalendarItemStartsAt(b)).getTime()
+      );
+  }, [items]);
+
   const [selected, setSelected] = useState<CalendarItem | null>(initialSelection);
   const [monthDate, setMonthDate] = useState<Date>(() =>
     getMonthAnchorDateFromIso(initialSelection ? getCalendarItemStartsAt(initialSelection) : undefined)
@@ -61,6 +76,27 @@ export function CalendarSection({ items, initialSelectedId }: CalendarSectionPro
               setMonthDate(getMonthAnchorDateFromIso(getCalendarItemStartsAt(item)));
             }}
           />
+        </div>
+        <div className="rounded-lg border border-white/10 bg-base-800 p-6">
+          <div className="text-xs uppercase tracking-wide text-muted">Upcoming Events</div>
+          {upcomingEvents.length === 0 ? (
+            <p className="mt-3 text-sm text-muted">No events scheduled in the next 30 days.</p>
+          ) : (
+            <ul className="mt-4 space-y-3">
+              {upcomingEvents.map((item) => (
+                <li
+                  key={item.id}
+                  className="flex items-start justify-between gap-3 border-b border-white/10 pb-3 last:border-b-0 last:pb-0"
+                >
+                  <div>
+                    <div className="text-sm font-semibold text-white">{getCalendarItemTitle(item)}</div>
+                    <div className="text-xs text-muted">{formatNzDateTime(getCalendarItemStartsAt(item))}</div>
+                  </div>
+                  <Badge label={item.type === "mission" ? "Mission" : "Event"} />
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </div>
       <div className="space-y-6">

@@ -2,6 +2,8 @@ export type Game = "Reforger" | "Arma 3";
 
 export type OpStatus = "Open" | "Limited" | "Full" | "Closed";
 
+export type OperationType = "Mission" | "Event";
+
 export type BriefingSections = {
   situation: string;
   enemyForces: string;
@@ -29,6 +31,7 @@ export type Operation = {
   id: string;
   name: string;
   startsAt: string;
+  type: OperationType;
   game: Game;
   status: OpStatus;
   missionMaker: string;
