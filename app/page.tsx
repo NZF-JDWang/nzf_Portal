@@ -4,10 +4,12 @@ import { Container } from "@/components/Container";
 import { CalendarSection } from "@/components/CalendarSection";
 import { SectionHeader } from "@/components/SectionHeader";
 import { config } from "@/lib/config";
-import { operations, upcomingOperations } from "@/data/operations";
+import { getCalendarItems } from "@/data/calendar";
+import { getCalendarItemStartsAt } from "@/types/calendar";
 
 export default function HomePage() {
-  const nextOp = upcomingOperations[0];
+  const items = getCalendarItems();
+  const nextOp = items.find((item) => new Date(getCalendarItemStartsAt(item)).getTime() >= Date.now());
 
   return (
     <div>
@@ -28,7 +30,7 @@ export default function HomePage() {
               Join Discord
             </a>
           </div>
-          <CalendarSection operations={operations} initialSelectedId={nextOp?.id} />
+          <CalendarSection items={items} initialSelectedId={nextOp?.id} />
         </Container>
       </section>
 

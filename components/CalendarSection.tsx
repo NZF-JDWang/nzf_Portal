@@ -2,7 +2,8 @@
 
 import { useMemo, useState } from "react";
 
-import type { Operation } from "@/types/operation";
+import type { CalendarItem } from "@/types/calendar";
+import { getCalendarItemDescription, getCalendarItemStartsAt, getCalendarItemTitle } from "@/types/calendar";
 import { CalendarMonth } from "@/components/CalendarMonth";
 import { CalendarWeek } from "@/components/CalendarWeek";
 import Image from "next/image";
@@ -12,25 +13,26 @@ import { formatNzDateTime } from "@/lib/format";
 import { getMonthAnchorDateFromIso, getStartOfWeek } from "@/lib/calendar";
 
 type CalendarSectionProps = {
-  operations: Operation[];
+  items: CalendarItem[];
   initialSelectedId?: string;
 };
 
-export function CalendarSection({ operations, initialSelectedId }: CalendarSectionProps) {
+export function CalendarSection({ items, initialSelectedId }: CalendarSectionProps) {
   const initialSelection = useMemo(() => {
     if (initialSelectedId) {
-      return operations.find((operation) => operation.id === initialSelectedId) ?? null;
+      return items.find((item) => item.id === initialSelectedId) ?? null;
     }
-    return operations[0] ?? null;
-  }, [initialSelectedId, operations]);
+    return items[0] ?? null;
+  }, [initialSelectedId, items]);
 
-  const [selected, setSelected] = useState<Operation | null>(initialSelection);
+  const [selected, setSelected] = useState<CalendarItem | null>(initialSelection);
   const [monthDate, setMonthDate] = useState<Date>(() =>
-    getMonthAnchorDateFromIso(initialSelection?.startsAt)
+    getMonthAnchorDateFromIso(initialSelection ? getCalendarItemStartsAt(initialSelection) : undefined)
   );
 
-  const signupList = selected?.signups ?? [];
+  const signupList = selected?.type === "mission" ? selected.operation.signups : [];
   const signupCount = signupList.length;
+  const selectedStartsAt = selected ? getCalendarItemStartsAt(selected) : null;
 
   return (
     <div className="grid gap-10 xl:grid-cols-[1.05fr_1.35fr] xl:items-start">
@@ -38,12 +40,12 @@ export function CalendarSection({ operations, initialSelectedId }: CalendarSecti
         <div className="hidden md:block">
           <div className="aspect-square w-full">
             <CalendarMonth
-              operations={operations}
+              items={items}
               monthDate={monthDate}
               selectedOperationId={selected?.id}
-              onSelect={(operation) => {
-                setSelected(operation);
-                setMonthDate(getMonthAnchorDateFromIso(operation.startsAt));
+              onSelect={(item) => {
+                setSelected(item);
+                setMonthDate(getMonthAnchorDateFromIso(getCalendarItemStartsAt(item)));
               }}
               onMonthChange={(date) => setMonthDate(date)}
             />
@@ -51,12 +53,12 @@ export function CalendarSection({ operations, initialSelectedId }: CalendarSecti
         </div>
         <div className="md:hidden">
           <CalendarWeek
-            startDate={getStartOfWeek(selected?.startsAt ? new Date(selected.startsAt) : new Date())}
-            operations={operations}
+            startDate={getStartOfWeek(selectedStartsAt ? new Date(selectedStartsAt) : new Date())}
+            items={items}
             selectedOperationId={selected?.id}
-            onSelect={(operation) => {
-              setSelected(operation);
-              setMonthDate(getMonthAnchorDateFromIso(operation.startsAt));
+            onSelect={(item) => {
+              setSelected(item);
+              setMonthDate(getMonthAnchorDateFromIso(getCalendarItemStartsAt(item)));
             }}
           />
         </div>
@@ -64,60 +66,77 @@ export function CalendarSection({ operations, initialSelectedId }: CalendarSecti
       <div className="space-y-6">
         <div className="rounded-lg border border-white/10 bg-base-800 p-6">
           <div className="flex items-center justify-between">
-            <div className="text-xs uppercase tracking-wide text-muted">Selected Operation</div>
-            {selected ? <Badge label={selected.game} /> : null}
+            <div className="text-xs uppercase tracking-wide text-muted">
+              {selected?.type === "event" ? "Selected Event" : "Selected Mission"}
+            </div>
+            {selected ? (
+              <Badge label={selected.type === "event" ? "Event" : selected.operation.game} />
+            ) : null}
           </div>
-          <div className="mt-3 text-2xl font-semibold">{selected?.name ?? "Select an operation"}</div>
+          <div className="mt-3 text-2xl font-semibold">
+            {selected ? getCalendarItemTitle(selected) : "Select a calendar item"}
+          </div>
           {selected ? (
             <>
-              <div className="mt-2 text-sm text-muted">{formatNzDateTime(selected.startsAt)}</div>
-              <div className="mt-4 text-sm text-white/70">
-                <span className="text-xs uppercase tracking-wide text-muted">Mission Maker</span>
-                <div className="mt-1 text-white">{selected.missionMaker}</div>
-              </div>
-              <div className="mt-6 overflow-hidden rounded-lg border border-white/10 bg-base-900/60">
-                <Image
-                  src={selected.intel[0]?.src ?? "/brand/nzf_logo.png"}
-                  alt={selected.intel[0]?.label ?? "Mission intel"}
-                  width={900}
-                  height={540}
-                  className="h-56 w-full object-cover md:h-64"
-                />
-              </div>
-              <div className="mt-6 space-y-4 text-sm text-white/70">
-                <div>
-                  <div className="text-xs uppercase tracking-wide text-muted">Situation</div>
-                  <p className="mt-2">{selected.briefing.situation}</p>
+              {selectedStartsAt ? <div className="mt-2 text-sm text-muted">{formatNzDateTime(selectedStartsAt)}</div> : null}
+              {selected.type === "mission" ? (
+                <>
+                  <div className="mt-4 text-sm text-white/70">
+                    <span className="text-xs uppercase tracking-wide text-muted">Mission Maker</span>
+                    <div className="mt-1 text-white">{selected.operation.missionMaker}</div>
+                  </div>
+                  <div className="mt-6 overflow-hidden rounded-lg border border-white/10 bg-base-900/60">
+                    <Image
+                      src={selected.operation.intel[0]?.src ?? "/brand/nzf_logo.png"}
+                      alt={selected.operation.intel[0]?.label ?? "Mission intel"}
+                      width={900}
+                      height={540}
+                      className="h-56 w-full object-cover md:h-64"
+                    />
+                  </div>
+                  <div className="mt-6 space-y-4 text-sm text-white/70">
+                    <div>
+                      <div className="text-xs uppercase tracking-wide text-muted">Situation</div>
+                      <p className="mt-2">{selected.operation.briefing.situation}</p>
+                    </div>
+                    <div>
+                      <div className="text-xs uppercase tracking-wide text-muted">Enemy Forces</div>
+                      <p className="mt-2">{selected.operation.briefing.enemyForces}</p>
+                    </div>
+                    <div>
+                      <div className="text-xs uppercase tracking-wide text-muted">Friendly Forces</div>
+                      <p className="mt-2">{selected.operation.briefing.friendlyForces}</p>
+                    </div>
+                    <div>
+                      <div className="text-xs uppercase tracking-wide text-muted">Objectives</div>
+                      <p className="mt-2">{selected.operation.briefing.objectives}</p>
+                    </div>
+                    <div>
+                      <div className="text-xs uppercase tracking-wide text-muted">Execution</div>
+                      <p className="mt-2">{selected.operation.briefing.execution}</p>
+                    </div>
+                    <div>
+                      <div className="text-xs uppercase tracking-wide text-muted">Command & Signal</div>
+                      <p className="mt-2">{selected.operation.briefing.commandSignal}</p>
+                    </div>
+                    <div>
+                      <div className="text-xs uppercase tracking-wide text-muted">Rules of Engagement</div>
+                      <p className="mt-2">{selected.operation.briefing.rulesOfEngagement}</p>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <div className="mt-6 space-y-3 text-sm text-white/70">
+                  <div>
+                    <div className="text-xs uppercase tracking-wide text-muted">Event Overview</div>
+                    <p className="mt-2">{getCalendarItemDescription(selected)}</p>
+                  </div>
                 </div>
-                <div>
-                  <div className="text-xs uppercase tracking-wide text-muted">Enemy Forces</div>
-                  <p className="mt-2">{selected.briefing.enemyForces}</p>
-                </div>
-                <div>
-                  <div className="text-xs uppercase tracking-wide text-muted">Friendly Forces</div>
-                  <p className="mt-2">{selected.briefing.friendlyForces}</p>
-                </div>
-                <div>
-                  <div className="text-xs uppercase tracking-wide text-muted">Objectives</div>
-                  <p className="mt-2">{selected.briefing.objectives}</p>
-                </div>
-                <div>
-                  <div className="text-xs uppercase tracking-wide text-muted">Execution</div>
-                  <p className="mt-2">{selected.briefing.execution}</p>
-                </div>
-                <div>
-                  <div className="text-xs uppercase tracking-wide text-muted">Command & Signal</div>
-                  <p className="mt-2">{selected.briefing.commandSignal}</p>
-                </div>
-                <div>
-                  <div className="text-xs uppercase tracking-wide text-muted">Rules of Engagement</div>
-                  <p className="mt-2">{selected.briefing.rulesOfEngagement}</p>
-                </div>
-              </div>
+              )}
             </>
           ) : (
             <p className="mt-3 text-sm text-muted">
-              Click an operation in the calendar to see the full briefing and signups.
+              Click a mission or event in the calendar to see the full briefing and details.
             </p>
           )}
         </div>
@@ -131,7 +150,9 @@ export function CalendarSection({ operations, initialSelectedId }: CalendarSecti
               </div>
               <div className="mt-4 flex flex-wrap gap-2">
                 {signupList.length === 0 ? (
-                  <span className="text-sm text-muted">No signups yet.</span>
+                  <span className="text-sm text-muted">
+                    {selected.type === "event" ? "Events do not collect signups yet." : "No signups yet."}
+                  </span>
                 ) : (
                   signupList.map((name) => (
                     <span
@@ -145,7 +166,7 @@ export function CalendarSection({ operations, initialSelectedId }: CalendarSecti
               </div>
             </>
           ) : (
-            <p className="mt-3 text-sm text-muted">Select an operation to see who is attending.</p>
+            <p className="mt-3 text-sm text-muted">Select a mission or event to see who is attending.</p>
           )}
         </div>
       </div>
