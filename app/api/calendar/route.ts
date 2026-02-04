@@ -39,6 +39,7 @@ function buildMissionOperation(payload: Record<string, unknown>): Operation {
     id: isNonEmptyString(payload.id) ? payload.id : `mission-${crypto.randomUUID()}`,
     name,
     startsAt,
+    type: "Mission",
     game: game as Game,
     status,
     missionMaker,
