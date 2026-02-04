@@ -1,20 +1,24 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useSession } from "next-auth/react";
 
 import { Container } from "@/components/Container";
 import { SectionHeader } from "@/components/SectionHeader";
 import { getCalendarItems } from "@/data/calendar";
 import { getNzDateKey } from "@/lib/calendar";
+import { canCreateEvent } from "@/lib/roles";
 import { getCalendarItemStartsAt, getCalendarItemTitle } from "@/types/calendar";
 
 export default function NewEventPage() {
+  const { data: session } = useSession();
   const [title, setTitle] = useState("");
   const [date, setDate] = useState("");
   const [timeHour, setTimeHour] = useState("19");
   const [timeMinute, setTimeMinute] = useState("00");
   const [description, setDescription] = useState("");
 
+  const isAuthorized = useMemo(() => canCreateEvent(session ?? null), [session]);
   const selectedDateKey = useMemo(() => {
     if (!date) return "";
     return getNzDateKey(new Date(`${date}T12:00:00`));
@@ -26,6 +30,19 @@ export default function NewEventPage() {
       getCalendarItems().find((item) => getNzDateKey(getCalendarItemStartsAt(item)) === selectedDateKey) ?? null
     );
   }, [selectedDateKey]);
+
+  if (!isAuthorized) {
+    return (
+      <section className="py-12">
+        <Container className="space-y-6">
+          <SectionHeader title="Add Event" subtitle="Members can schedule non-mission events." />
+          <div className="rounded-lg border border-white/10 bg-base-800 p-6 text-sm text-muted">
+            You need the Member role (or superuser access) to add events.
+          </div>
+        </Container>
+      </section>
+    );
+  }
 
   return (
     <section className="bg-gradient-to-b from-base-850 via-base-900 to-base-900 py-10">
@@ -121,7 +138,7 @@ export default function NewEventPage() {
                 Create Event (Stub)
               </button>
               <p className="mt-3 text-xs text-muted">
-                This is a prototype UI only — saving and notifications will be wired later.
+                This is a prototype UI only - saving and notifications will be wired later.
               </p>
             </div>
           </div>
